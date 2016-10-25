@@ -30,10 +30,10 @@ pipeline:
   #     event: [push, pull_request]
 
 # start needed services
-services:
-  dind:
-    image: docker:1.11-dind
-    privileged: true
-    command:
-      - "-s"
-      - "overlay"
+# services:
+#   dind:
+#     image: docker:1.11-dind
+#     privileged: true
+#     command:
+#       - "-s"
+#       - "overlay"
