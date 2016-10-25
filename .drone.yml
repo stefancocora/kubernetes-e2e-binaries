@@ -1,0 +1,64 @@
+---
+pipeline:
+
+# drone repo name
+# UKHomeOffice/kubernetes-e2e-binaries
+
+# build steps
+
+  get_kubernetes_source:
+    image: alpine:3.4
+    environment:
+      - KUBERNETES_VERSION=v1.4.4
+    commands:
+      - apk --update add git make bash
+      - KUBERNETES_VERSION=${KUBERNETES_VERSION} make get_kubernetes_source
+    when:
+      event: [push, pull_request]
+
+  build_kubernetes_binaries:
+    privileged: true
+    image: docker:1.11
+    environment:
+      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - KUBERNETES_VERSION=v1.4.4
+    commands:
+      - apk --update add bash tar make
+      - KUBERNETES_VERSION=${KUBERNETES_VERSION} make build_kubernetes_binaries
+    when:
+      event: [push, pull_request]
+
+  build_image:
+    privileged: true
+    image: docker:1.11
+    environment:
+      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - KUBERNETES_VERSION=v1.4.4
+    commands:
+      - apk --update add git bash make
+      - KUBERNETES_VERSION=${KUBERNETES_VERSION} make build_image
+    when:
+      branch: master
+      event: [push]
+
+  image_to_quay:
+    image: docker:1.11
+    environment:
+      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - KUBERNETES_VERSION=v1.4.4
+    commands:
+    - docker login -u="ukhomeofficedigital+kubernetes_e2e_binaries" -p=${DOCKER_TOKEN} quay.io
+    - docker tag kubernetes-e2e-binaries quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}-${DRONE_COMMIT_SHA:0:7}
+    - docker push quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}-${DRONE_COMMIT_SHA:0:7}
+    when:
+      branch: master
+      event: [push]
+
+# start needed services
+services:
+  dind:
+    image: docker:1.11-dind
+    privileged: true
+    command:
+      - "-s"
+      - "overlay"
