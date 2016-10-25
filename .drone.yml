@@ -1,0 +1,39 @@
+---
+pipeline:
+
+# drone repo name
+# UKHomeOffice/kubernetes-e2e-binaries
+
+# build steps
+
+  get_kubernetes_source:
+    image: alpine:3.4
+    environment:
+      - KUBERNETES_VERSION=v1.4.4
+    commands:
+      - apk --update add git
+      - git clone https://github.com/kubernetes/kubernetes.git
+      - ls -lh kubernetes/
+    when:
+      branch: drone_ci
+      event: [push, pull_request]
+
+  # build_kubernetes_binaries:
+  #   privileged: true
+  #   image: docker:1.11
+  #   environment:
+  #     - DOCKER_HOST=tcp://127.0.0.1:2375
+  #   commands:
+  #     - some command
+  #   when:
+  #     branch: drone_ci
+  #     event: [push, pull_request]
+
+# start needed services
+services:
+  dind:
+    image: docker:1.11-dind
+    privileged: true
+    command:
+      - "-s"
+      - "overlay"
