@@ -13,8 +13,7 @@ pipeline:
     commands:
       - apk --update add git
       - git clone https://github.com/kubernetes/kubernetes.git
-      - ls -lh kubernetes/
-      - cd kubernetes; git tag -l -n5
+      - cd kubernetes; git co ${KUBERNETES_VERSION}
     when:
       branch: drone_ci
       event: [push, pull_request]
