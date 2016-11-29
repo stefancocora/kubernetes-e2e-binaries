@@ -29,6 +29,9 @@ help:
 	@echo "Sends the image artifact to the quay repository"
 	@echo "make image_to_quay"
 	@echo ""
+	@echo "Updates the kubernetes version in the drone yaml"
+	@echo "make update_kube_version"
+	@echo ""
 
 check_kubernetes_version:
 ifndef KUBERNETES_VERSION
@@ -53,3 +56,6 @@ build_kubernetes_binaries: check_kubernetes_version
 
 build_image: check_kubernetes_version
 	docker build -t kubernetes-e2e-binaries --build-arg KUBERNETES_VERSION=$(KUBERNETES_VERSION) .
+
+update_kube_version: check_kubernetes_version
+	sed -i "s|KUBERNETES_VERSION=v.*|KUBERNETES_VERSION=$(KUBERNETES_VERSION)|" .drone.yml

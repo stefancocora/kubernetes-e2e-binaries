@@ -32,7 +32,7 @@ This makes it easy to test your changes before pushing them to the CI system.
 ## kubernetes version
 To target a specific version of kubernetes you have to change a few things in the repository.
 - for the `Makefile` export the KUBERNETES_VERSION environment variable before running any make targets
-- for `.drone.yml` you have to change the KUBERNETES_VERSION environment variable in every build step before pushing to your CI. This works this way because at this time drone doesn't have support for setting global environment variables.
+- the make target `update_kube_version` will update the `.drone.yml` file to the same version as the one set in the exported variable above. In drone you have to setup the kubernetes version multiple times because at this time drone doesn't have support for setting global environment variables.
 
 
 # Licensing
