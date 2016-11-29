@@ -14,7 +14,7 @@ pipeline:
       - apk --update add git make bash
       - KUBERNETES_VERSION=${KUBERNETES_VERSION} make get_kubernetes_source
     when:
-      event: [push, pull_request]
+      event: [push, pull_request, tag]
 
   build_kubernetes_binaries:
     privileged: true
@@ -26,7 +26,7 @@ pipeline:
       - apk --update add bash tar make
       - KUBERNETES_VERSION=${KUBERNETES_VERSION} make build_kubernetes_binaries
     when:
-      event: [push, pull_request]
+      event: [push, pull_request, tag]
 
   build_image:
     privileged: true
@@ -39,7 +39,7 @@ pipeline:
       - KUBERNETES_VERSION=${KUBERNETES_VERSION} make build_image
     when:
       branch: master
-      event: [push]
+      event: [push, tag]
 
   image_to_quay:
     image: docker:1.12
