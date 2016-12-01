@@ -49,7 +49,9 @@ pipeline:
     commands:
     - docker login -u="ukhomeofficedigital+kubernetes_e2e_binaries" -p=${DOCKER_TOKEN} quay.io
     - docker tag kubernetes-e2e-binaries quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}-${DRONE_COMMIT_SHA:0:7}
+    - docker tag kubernetes-e2e-binaries quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}
     - docker push quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}-${DRONE_COMMIT_SHA:0:7}
+    - docker push quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${KUBERNETES_VERSION}
     when:
       branch: master
       event: [push]
