@@ -63,7 +63,7 @@ pipeline:
         - docker tag kubernetes-e2e-binaries quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${DRONE_TAG}
         - docker push quay.io/ukhomeofficedigital/kubernetes-e2e-binaries:${DRONE_TAG}
       when:
-        event: tag
+        event: [tag]
 
 
 # start needed services
